@@ -11,8 +11,8 @@ def load_train(path):
 
 def create_model(input_shape):
     model = Sequential()
-    model.add(Dense(20, input_shape=input_shape, activation='softmax'))
-    model.add(Dense(10, input_dim=20, activation='softmax'))
+    model.add(Dense(10, input_shape=input_shape, activation='softmax'))
+    model.add(Dense(4, input_dim=10, activation='softmax'))
     model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy',
                   metrics=['acc'])
 
