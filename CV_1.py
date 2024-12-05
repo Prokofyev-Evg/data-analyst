@@ -11,13 +11,14 @@ def load_train(path):
 
 def create_model(input_shape):
     model = Sequential()
-    model.add(Dense(10, input_shape=input_shape, activation='softmax'))
+    model.add(Dense(20, input_shape=input_shape, activation='softmax'))
+    model.add(Dense(10, input_dim=20, activation='softmax'))
     model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy',
                   metrics=['acc'])
 
     return model
 
-def train_model(model, train_data, test_data, batch_size=32, epochs=5,
+def train_model(model, train_data, test_data, batch_size=32, epochs=50,
                steps_per_epoch=None, validation_steps=None):
 
     features_train, target_train = train_data
