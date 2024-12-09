@@ -8,10 +8,10 @@ import numpy as np
 
 def load_train(path):
     datagen = ImageDataGenerator(
-        horizontal_flip=True,
-        vertical_flip=True,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
+        # horizontal_flip=True,
+        # vertical_flip=True,
+        # width_shift_range=0.2,
+        # height_shift_range=0.2,
         # rotation_range=90,
         validation_split=0.1,
         rescale=1./255
@@ -32,18 +32,17 @@ def create_model(input_shape):
     # backbone.trainable = False
     model = Sequential()
     model.add(backbone)
-    model.add(Conv2D(filters=4, kernel_size=(3, 3), padding='same', input_shape=(150, 150, 3), activation='relu'))
+    model.add(Conv2D(filters=8, kernel_size=(3, 3), padding='same', input_shape=(150, 150, 3), activation='relu'))
     model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Conv2D(filters=4, kernel_size=(3, 3), padding='same', input_shape=(150, 150, 3), activation='relu'))
+    model.add(Conv2D(filters=6, kernel_size=(3, 3), padding='same', input_shape=(150, 150, 3), activation='relu'))
     model.add(AveragePooling2D(pool_size=(2, 2)))
     model.add(Conv2D(filters=4, kernel_size=(3, 3), padding='same', input_shape=(150, 150, 3), activation='relu'))
     model.add(GlobalAveragePooling2D())
-    model.add(Dense(20, activation='relu')) 
-    model.add(Dense(12, input_dim=20, activation='softmax'))
+    model.add(Dense(12, activation='softmax'))
     model.compile(optimizer=Adam(), loss='sparse_categorical_crossentropy', metrics=['acc']) 
     return model
 
-def train_model(model, train_data, test_data, batch_size=None, epochs=7,
+def train_model(model, train_data, test_data, batch_size=None, epochs=6,
                steps_per_epoch=None, validation_steps=None):
     model.fit(train_data, 
               validation_data=test_data,
