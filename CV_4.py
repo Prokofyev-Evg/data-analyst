@@ -38,11 +38,12 @@ def create_model(input_shape):
     model.add(AveragePooling2D(pool_size=(2, 2)))
     model.add(Conv2D(filters=4, kernel_size=(3, 3), padding='same', input_shape=(150, 150, 3), activation='relu'))
     model.add(GlobalAveragePooling2D())
-    model.add(Dense(12, activation='softmax'))
+    model.add(Dense(20, activation='relu')) 
+    model.add(Dense(12, input_dim=20, activation='softmax'))
     model.compile(optimizer=Adam(), loss='sparse_categorical_crossentropy', metrics=['acc']) 
     return model
 
-def train_model(model, train_data, test_data, batch_size=None, epochs=5,
+def train_model(model, train_data, test_data, batch_size=None, epochs=7,
                steps_per_epoch=None, validation_steps=None):
     model.fit(train_data, 
               validation_data=test_data,
