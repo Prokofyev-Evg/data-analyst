@@ -9,12 +9,12 @@ optimizer = Adam()
 
 def load_train(path):
     datagen = ImageDataGenerator(
-        horizontal_flip=True,
-        vertical_flip=True,
+        # horizontal_flip=True,
+        # vertical_flip=True,
         # width_shift_range=0.2,
         # height_shift_range=0.2,
         # rotation_range=90,
-        validation_split=0.1,
+        # validation_split=0.1,
         rescale=1./255
     )
 
@@ -38,8 +38,7 @@ def create_model(input_shape):
     model.add(backbone)
     model.add(GlobalAveragePooling2D())
     model.add(Dense(12, activation='softmax'))
-    model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', 
-              metrics=['acc']) 
+    model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['acc']) 
 
     return model
 
