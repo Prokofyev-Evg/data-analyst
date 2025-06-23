@@ -18,6 +18,14 @@ sorter_names = [
     ("1-й спортивный разряд, мальчики", "Произвольная программа", 30),
     ("1-й спортивный разряд, девочки", "Короткая программа", 19),
     ("1-й спортивный разряд, девочки", "Произвольная программа", 30),
+    ("КМС, девушки", "Короткая программа", 30),
+    ("КМС, девушки", "Произвольная программа", 49),
+    ("КМС, юноши", "Короткая программа", 32),
+    ("КМС, юноши", "Произвольная программа", 50),
+    ("МС, девушки", "Короткая программа", 35),
+    ("МС, девушки", "Произвольная программа", 53),
+    ("МС, юноши", "Короткая программа", 38),
+    ("МС, юноши", "Произвольная программа", 63),
 ]
 
 
@@ -30,14 +38,19 @@ def get_top_df(df, qty):
 
 
 def pie_of_winners(df, season, rank, limit, title):
-    get_top_df(df[(df["season"] == season) & (df["rank"] <= rank)], limit).plot.pie(
-        autopct="%1.f%%",
-        legend=False,
-        wedgeprops={"edgecolor": "white", "linewidth": 2, "antialiased": True},
+    fig = (
+        get_top_df(df[(df["season"] == season) & (df["rank"] <= rank)], limit)
+        .plot.pie(
+            autopct="%1.f%%",
+            legend=False,
+            wedgeprops={"edgecolor": "white", "linewidth": 2, "antialiased": True},
+        )
+        .get_figure()
     )
     plt.title(title, fontsize=16)
     plt.xlabel("", fontsize=18)
     plt.ylabel("", fontsize=18)
+    return fig
 
 
 def participants_for_club_in_season(
@@ -163,12 +176,12 @@ def sportsmen_rating_in_season(
     display(df_tss.iloc[idx])
 
 
-def club_rating_in_season(df, season, category, club, limit=50):
+def club_rating_in_season(df, season, category, club, limit=50, ascending=False):
     df_tss = (
         df[(df["season"] == season) & (df["category"] == category)]
         .groupby(["date", "firstname", "lastname", "club"])
         .sum()
-        .sort_values("tss", ascending=False)
+        .sort_values("tss", ascending=ascending)
         .reset_index()
     )
     idx = df_tss[df_tss["club"] == club].index
@@ -194,3 +207,22 @@ def get_df_of_club_in_year(df, club, year):
 
 def get_df_of_club_in_season(df, club, season):
     return df[(df["season"] == season) & (df["club"] == club)].reset_index(drop=True)
+
+
+def participants_of_club_in_season(df, club, season):
+    data = (
+        get_df_of_club_in_season(df, club, season)
+        .groupby(["date", "firstname", "lastname"])
+        .last()
+        .reset_index()
+        .groupby(["firstname", "lastname"])
+        .count()
+        .sort_values(by=["date", "lastname"], ascending=False)["club"]
+    )
+    ax = data.plot(kind="bar", figsize=(20, 10), grid=True)
+    major_ticks = np.arange(0, max(data) + 1, 1)
+    ax.set_yticks(major_ticks)
+    plt.title(f"Количество участий спортсменов в сезоне {season}", fontsize=32)
+    plt.xlabel("Спортсмен", fontsize=16)
+    plt.ylabel(f"", fontsize=18)
+    plt.xticks(fontsize=10, rotation=50, horizontalalignment="right")
